@@ -8,14 +8,21 @@ export default function App() {
 
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
+  const [heldIsEqual, setHeldIsEqual] = useState(false)
   
   useEffect(() => {
       const allHeld = dice.every(die => die.isHeld)
-      const firstValue = dice[0].value
-      const allSameValue = dice.every(die => die.value === firstValue)
+      const allSameValue = dice.every(die => die.value === dice[0].value)
+      const filteredDice = dice.filter(die=> die.isHeld)
+      const allHeldSame = filteredDice.every(die=> die.value === filteredDice[0].value)
+      
       if (allHeld && allSameValue) {
           setTenzies(true)
       }
+
+      setHeldIsEqual(allHeldSame)
+
+
   }, [dice])
 
   function generateNewDie() {
@@ -54,13 +61,14 @@ export default function App() {
               die
       }))
   }
-  
+
   const diceElements = dice.map(die => (
       <Die 
           key={die.id} 
           value={die.value} 
           isHeld={die.isHeld} 
           holdDice={() => holdDice(die.id)}
+          heldIsEqual = {heldIsEqual}
       />
   ))
   
